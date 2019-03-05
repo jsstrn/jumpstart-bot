@@ -14,6 +14,7 @@ const fetch = axios.create({
 
 const eventType = {
   appMention: "app_mention",
+  eventCallback: "event_callback",
   urlVerification: "url_verification"
 };
 
@@ -44,9 +45,9 @@ exports.handler = (event, context, callback) => {
       }
     }
 
-    if (type === eventType.appMention) {
+    if (type === eventType.eventCallback && body.event.type === eventType.appMention) {
       callback(null, { statusCode: 200 });
-      const { channel } = body;
+      const { channel } = body.event;
 
       console.log("Bot has been mentioned. Sending reply now...");
       fetch
