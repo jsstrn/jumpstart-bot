@@ -19,6 +19,10 @@ const eventType = {
 
 exports.handler = (event, context, callback) => {
   const body = JSON.parse(event.body);
+  const { type } = body;
+
+  console.log("type:", type);
+  console.log("method", event.httpMethod);
 
   if (event.httpMethod === "GET") {
     callback(null, {
@@ -28,8 +32,6 @@ exports.handler = (event, context, callback) => {
   }
 
   if (event.httpMethod === "POST") {
-    const { type } = body;
-
     if (type === eventType.urlVerification) {
       const { challenge, token } = body;
       if (token === VERIFICATION_TOKEN) {
@@ -46,13 +48,15 @@ exports.handler = (event, context, callback) => {
       callback(null, { statusCode: 200 });
       const { channel } = body;
 
-      console.log("Bot has been mentioned. Sending reply now...")
-      fetch.post("/chat.postMessage", {
-        channel,
-        text: "Hello, this is JumpStart Bot!"
-      }).then(res => {
-        console.log(res)
-      })
+      console.log("Bot has been mentioned. Sending reply now...");
+      fetch
+        .post("/chat.postMessage", {
+          channel,
+          text: "Hello, this is JumpStart Bot!"
+        })
+        .then(res => {
+          console.log(res);
+        });
     }
   }
 };
