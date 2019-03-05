@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^6.2.0",
     "netlify-lambda": "^1.4.2"
+  },
+  "devDependencies": {
+    "dotenv": "^6.2.0"
   }
 }
