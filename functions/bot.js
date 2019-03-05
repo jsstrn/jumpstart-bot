@@ -1,8 +1,19 @@
 require("dotenv").config();
+const VERIFICATION_TOKEN = process.env.VERIFICATION_TOKEN;
+const BOT_TOKEN = process.env.BOT_USER_ACCESS_TOKEN;
 
-const TOKEN = process.env.VERIFICATION_TOKEN;
+const axios = require("axios");
+
+const fetch = axios.create({
+  baseURL: "https://slack.com/api",
+  headers: {
+    Authorization: `Bearer ${BOT_TOKEN}`,
+    "Content-Type": "application/json"
+  }
+});
 
 const eventType = {
+  appMention: "app_mention",
   urlVerification: "url_verification"
 };
 
@@ -18,9 +29,11 @@ exports.handler = (event, context, callback) => {
 
   if (event.httpMethod === "POST") {
     const { type } = body;
+
+    // Slack verification
     if (type === eventType.urlVerification) {
       const { challenge, token } = body;
-      if (token === TOKEN) {
+      if (token === VERIFICATION_TOKEN) {
         callback(null, {
           statusCode: 200,
           body: JSON.stringify({
@@ -28,6 +41,17 @@ exports.handler = (event, context, callback) => {
           })
         });
       }
+    }
+
+    // Bot is mentioned in chat
+    if (type === eventType.appMention) {
+      callback(null, { statusCode: 200 });
+      const { channel } = body;
+
+      fetch.post("/chat.postMessage", {
+        channel,
+        text: "Hello, this is JumpStart Bot delivered to you by Netlify"
+      });
     }
   }
 };
