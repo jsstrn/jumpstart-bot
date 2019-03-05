@@ -30,7 +30,6 @@ exports.handler = (event, context, callback) => {
   if (event.httpMethod === "POST") {
     const { type } = body;
 
-    // Slack verification
     if (type === eventType.urlVerification) {
       const { challenge, token } = body;
       if (token === VERIFICATION_TOKEN) {
@@ -43,15 +42,17 @@ exports.handler = (event, context, callback) => {
       }
     }
 
-    // Bot is mentioned in chat
     if (type === eventType.appMention) {
       callback(null, { statusCode: 200 });
       const { channel } = body;
 
+      console.log("Bot has been mentioned. Sending reply now...")
       fetch.post("/chat.postMessage", {
         channel,
-        text: "Hello, this is JumpStart Bot delivered to you by Netlify"
-      });
+        text: "Hello, this is JumpStart Bot!"
+      }).then(res => {
+        console.log(res)
+      })
     }
   }
 };
