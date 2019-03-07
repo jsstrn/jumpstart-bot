@@ -18,6 +18,16 @@ const eventType = {
   urlVerification: "url_verification"
 };
 
+const isGreeting = text => {
+  let msg = text.toLowerCase();
+  return msg.includes("hello") || msg.includes("hi");
+};
+
+const isAboutBot = text => {
+  let msg = text.toLowerCase();
+  return msg.includes("what can you do") || msg.includes("what are you able to do");
+};
+
 exports.handler = (event, context, callback) => {
   const body = JSON.parse(event.body);
   const { type } = body;
@@ -48,18 +58,18 @@ exports.handler = (event, context, callback) => {
 
       let message = "Sorry, I don't understand your request.";
 
-      if (text.toLowerCase().includes("hello")) {
-        message = `Hello ${user}, this is JumpStart Bot!`;
+      if (isGreeting(text)) {
+        message = `Hello, this is JumpStart Bot!`;
       }
 
-      fetch
-        .post("/chat.postMessage", {
-          channel,
-          text: message
-        })
-        .then(res => {
-          console.log(res);
-        });
+      if (isAboutBot(text)) {
+        message = `I'm not able to do much right now.`;
+      }
+
+      fetch.post("/chat.postMessage", {
+        channel,
+        text: message
+      });
     }
   }
 };
