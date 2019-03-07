@@ -1,6 +1,7 @@
 require("dotenv").config();
 const axios = require("axios");
 const reply = require("../lib/reply");
+const eventType = require("../lib/eventTypes");
 
 const VERIFICATION_TOKEN = process.env.VERIFICATION_TOKEN;
 const BOT_TOKEN = process.env.BOT_USER_ACCESS_TOKEN;
@@ -12,12 +13,6 @@ const fetch = axios.create({
     "Content-Type": "application/json"
   }
 });
-
-const eventType = {
-  appMention: "app_mention",
-  eventCallback: "event_callback",
-  urlVerification: "url_verification"
-};
 
 exports.handler = (event, context, callback) => {
   const body = JSON.parse(event.body);
