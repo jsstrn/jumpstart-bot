@@ -35,10 +35,16 @@ exports.handler = (event, context, callback) => {
             challenge
           })
         });
+      } else {
+        callback(null, {
+          statusCode: 401,
+          body: "Unauthorized"
+        });
       }
+      return;
     }
 
-    if (body.event.type === eventType.appMention) {
+    if (body.event && body.event.type === eventType.appMention) {
       callback(null, { statusCode: 200 });
       const { channel, text, user } = body.event;
 
