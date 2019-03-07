@@ -23,3 +23,17 @@ Get link to submit assignment
 ```
 @JumpStartBot assignment
 ```
+
+## Getting started
+
+0. Deploy to Netlify
+
+0. Login to your Slack workspace and create a Slack app
+
+0. Install the app to your workspace
+
+0. Turn on Bot User and Event Subscriptions
+
+0. Add all API tokens in your environment variables
+
+0. Profit
