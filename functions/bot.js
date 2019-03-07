@@ -1,5 +1,6 @@
 require("dotenv").config();
 const axios = require("axios");
+const reply = require("../lib/reply");
 
 const VERIFICATION_TOKEN = process.env.VERIFICATION_TOKEN;
 const BOT_TOKEN = process.env.BOT_USER_ACCESS_TOKEN;
@@ -16,16 +17,6 @@ const eventType = {
   appMention: "app_mention",
   eventCallback: "event_callback",
   urlVerification: "url_verification"
-};
-
-const isGreeting = text => {
-  let msg = text.toLowerCase();
-  return msg.includes("hello") || msg.includes("hi");
-};
-
-const isAboutBot = text => {
-  let msg = text.toLowerCase();
-  return msg.includes("what can you do") || msg.includes("what are you able to do");
 };
 
 exports.handler = (event, context, callback) => {
@@ -56,16 +47,7 @@ exports.handler = (event, context, callback) => {
       callback(null, { statusCode: 200 });
       const { channel, text, user } = body.event;
 
-      let message = "Sorry, I don't understand your request.";
-
-      if (isGreeting(text)) {
-        message = `Hello, this is JumpStart Bot!`;
-      }
-
-      if (isAboutBot(text)) {
-        message = `I'm not able to do much right now.`;
-      }
-
+      let message = reply(text);
       fetch.post("/chat.postMessage", {
         channel,
         text: message
