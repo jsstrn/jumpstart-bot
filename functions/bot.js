@@ -1,8 +1,8 @@
 require("dotenv").config();
+const axios = require("axios");
+
 const VERIFICATION_TOKEN = process.env.VERIFICATION_TOKEN;
 const BOT_TOKEN = process.env.BOT_USER_ACCESS_TOKEN;
-
-const axios = require("axios");
 
 const fetch = axios.create({
   baseURL: "https://slack.com/api",
@@ -21,9 +21,6 @@ const eventType = {
 exports.handler = (event, context, callback) => {
   const body = JSON.parse(event.body);
   const { type } = body;
-
-  console.log("type:", type);
-  console.log("method", event.httpMethod);
 
   if (event.httpMethod === "GET") {
     callback(null, {
@@ -45,15 +42,20 @@ exports.handler = (event, context, callback) => {
       }
     }
 
-    if (type === eventType.eventCallback && body.event.type === eventType.appMention) {
+    if (body.event.type === eventType.appMention) {
       callback(null, { statusCode: 200 });
-      const { channel } = body.event;
+      const { channel, text, user } = body.event;
 
-      console.log("Bot has been mentioned. Sending reply now...");
+      let message = "Sorry, I don't understand your request.";
+
+      if (text.toLowerCase().includes("hello")) {
+        message = `Hello ${user}, this is JumpStart Bot!`;
+      }
+
       fetch
         .post("/chat.postMessage", {
           channel,
-          text: "Hello, this is JumpStart Bot!"
+          text: message
         })
         .then(res => {
           console.log(res);
